@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hispanic Heritage: Culture & Calculus | Michael Khan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mexico: {
+                            green: '#006847',
+                            red: '#CE1126',
+                            gold: '#D4AF37'
+                        },
+                        chile: {
+                            blue: '#0039A6',
+                            red: '#D52B1E',
+                            white: '#FFFFFF'
+                        },
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Smooth Transitions */
+        .slide-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .fade-enter {
+            opacity: 0;
+            transform: scale(0.98) translateY(10px);
+        }
+        
+        .fade-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Custom Scrollbar for side panel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: rgba(75, 85, 99, 0.5);
+        }
+
+        /* Math formula formatting */
+        .math-font {
+            font-family: 'Fira Code', monospace;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden select-none">
+
+    <!-- TOP BAR / HEADER -->
+    <header class="h-14 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 flex items-center justify-between z-20 shrink-0">
+        <div class="flex items-center space-x-3">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 via-teal-600 to-indigo-600 text-white font-bold text-sm shadow-md">
+                MK
+            </span>
+            <div>
+                <h1 class="text-xs sm:text-sm font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Mexican and Chile Lucas Project</span>
+                    <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Calculus & Culture</span>
+                </h1>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">By Michael Khan • Hispanic Heritage Project</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <!-- Counter -->
+            <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300/50 dark:border-slate-700/50">
+                <span id="current-slide-num">1</span> / <span id="total-slides-num">10</span>
+            </span>
+
+            <!-- Thumbnails Toggle -->
+            <button id="toggle-thumbs-btn" title="Toggle Slide Drawer" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-shapes"></i>
+            </button>
+
+            <!-- Theme Switcher -->
+            <button id="theme-toggle" title="Toggle Theme" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+            </button>
+
+            <!-- Fullscreen -->
+            <button id="fullscreen-toggle" title="Toggle Fullscreen" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors hidden sm:block">
+                <i class="fa-solid fa-expand" id="fullscreen-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="w-full bg-slate-200 dark:bg-slate-800 h-1 z-30">
+        <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 h-full w-1/10 transition-all duration-300"></div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex relative overflow-hidden">
+
+        <!-- SLIDE DISPLAY CONTAINER -->
+        <main class="flex-1 flex items-center justify-center p-3 sm:p-6 lg:p-8 relative overflow-y-auto">
+
+            <!-- SLIDE FRAME -->
+            <div id="slide-card" class="w-full max-w-5xl aspect-auto min-h-[500px] sm:min-h-[560px] md:min-h-[600px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between overflow-hidden relative slide-transition">
+                
+                <!-- Slide Header Banner Decoration -->
+                <div class="h-2 w-full bg-gradient-to-r from-emerald-500 via-rose-500 to-blue-600"></div>
+                
+                <!-- Slide Inner Content -->
+                <div id="slide-content" class="p-6 sm:p-10 md:p-12 flex-1 flex flex-col justify-center">
+                    <!-- Dynamic Slide Content Loaded Here -->
+                </div>
+
+                <!-- Slide Footer Info -->
+                <div class="px-6 py-3 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center text-xs text-slate-400 dark:text-slate-500">
+                    <span class="font-medium text-slate-500 dark:text-slate-400">Hispanic Heritage Presentation | Michael Khan</span>
+                    <span id="slide-footer-tag">Slide 1 of 10</span>
+                </div>
+
+            </div>
+
+            <!-- FLOATING NAV CONTROLS -->
+            <button id="prev-btn" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full glass border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:scale-110 active:scale-95 transition-all z-10 disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <button id="next-btn" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full glass border border-slate-200 dark:border-slate-700 shadow-lg flex items-center justify-center text-slate-700 dark:text-slate-200 hover:scale-110 active:scale-95 transition-all z-10 disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+        </main>
+
+        <!-- SIDEBAR SLIDE DRAWER / THUMBNAILS -->
+        <aside id="slide-drawer" class="w-72 border-l border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md flex flex-col transition-all duration-300 z-20 absolute right-0 top-0 bottom-0 translate-x-full lg:relative lg:translate-x-0 shadow-2xl lg:shadow-none">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                <h2 class="text-sm font-bold tracking-wide uppercase text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul"></i> Slide Index
+                </h2>
+                <button id="close-drawer-btn" class="lg:hidden text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Slide Thumbnails Scroll Area -->
+            <div id="thumbnails-container" class="flex-1 overflow-y-auto p-3 space-y-2">
+                <!-- Dynamically generated list items -->
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- BOTTOM MOBILE NAVIGATION BAR -->
+    <nav class="h-14 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 flex items-center justify-between z-20 shrink-0 sm:hidden">
+        <button id="mobile-prev" class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Prev
+        </button>
+        
+        <select id="mobile-slide-select" class="bg-slate-100 dark:bg-slate-800 text-xs font-medium px-2 py-1.5 rounded-md border border-slate-300 dark:border-slate-700">
+            <!-- Populated via JS -->
+        </select>
+
+        <button id="mobile-next" class="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-xs font-semibold">
+            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+    </nav>
+
+    <script>
+        // SLIDE DATA SOURCE
+        const slidesData = [
+            {
+                id: 1,
+                title: "HISPANIC HERITAGE",
+                subtitle: "Culture • History • Data • Calculus",
+                content: `
+                    <div class="text-center py-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 text-xs font-semibold mb-6 tracking-wide uppercase shadow-sm">
+                            <i class="fa-solid fa-graduation-cap"></i> High School Mathematics & Social Studies Project
+                        </div>
+                        <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
+                            HISPANIC HERITAGE:<br/>
+                            <span class="bg-gradient-to-r from-emerald-600 via-rose-500 to-blue-600 bg-clip-text text-transparent">Culture, History & Calculus</span>
+                        </h1>
+                        <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+                            Exploring Mexico and Chile through life expectancy indicators and the mathematics of rate of change.
+                        </p>
+                        
+                        <div class="inline-block p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 shadow-lg text-left max-w-md w-full">
+                            <div class="text-xs uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-400 mb-1">Presented by</div>
+                            <div class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-user-circle text-emerald-600 dark:text-emerald-400"></i>
+                                Michael Khan
+                            </div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Hispanic Heritage Project</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                title: "What is Hispanic Heritage Month?",
+                subtitle: "A celebration of histories, cultures, and contributions",
+                content: `
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-6 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-slate-800/40 border border-amber-200/60 dark:border-slate-700/60 shadow-sm">
+                                <div class="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold text-lg mb-3">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">When is it celebrated?</h3>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                                    Observed from <span class="font-semibold text-amber-700 dark:text-amber-400">September 15 to October 15</span> annually across the United States to recognize the contributions and influence of Hispanic Americans.
+                                </p>
+                            </div>
+
+                            <div class="p-6 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-800/40 border border-emerald-200/60 dark:border-slate-700/60 shadow-sm">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-lg mb-3">
+                                    <i class="fa-solid fa-flag"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Why Sept 15?</h3>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                                    It marks the independence anniversary for Costa Rica, El Salvador, Guatemala, Honduras, and Nicaragua. 
+                                    <strong class="text-emerald-700 dark:text-emerald-400">Mexico</strong> celebrates Sept 16 and <strong class="text-emerald-700 dark:text-emerald-400">Chile</strong> on Sept 18!
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+                            <div class="text-3xl text-rose-500">
+                                <i class="fa-solid fa-palette"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Cultural Diversity</h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-300">
+                                    Encompasses diverse traditions, languages, art, food, music, and rich complex histories across North, Central, and South America.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                title: "Two Countries, Many Stories",
+                subtitle: "Focusing on Mexico & Chile",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- MEXICO -->
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-2 border-emerald-500/30 hover:border-emerald-500 transition-all shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-2xl font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-earth-americas"></i> MEXICO
+                                </h3>
+                                <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold text-xs rounded-full">North America</span>
+                            </div>
+                            <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-city text-emerald-600 mt-1"></i>
+                                    <span><strong>Capital:</strong> Mexico City</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-cake-candles text-emerald-600 mt-1"></i>
+                                    <span><strong>Independence Day:</strong> September 16</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-music text-emerald-600 mt-1"></i>
+                                    <span><strong>Highlights:</strong> Distinct regional music, vibrant cuisine, ancient Indigenous heritage (Aztec & Maya), and Spanish linguistic legacy.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- CHILE -->
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-2 border-blue-500/30 hover:border-blue-500 transition-all shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-2xl font-black text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-mountain font-bold"></i> CHILE
+                                </h3>
+                                <span class="px-2.5 py-1 bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 font-semibold text-xs rounded-full">South America</span>
+                            </div>
+                            <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-city text-blue-600 mt-1"></i>
+                                    <span><strong>Capital:</strong> Santiago</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-cake-candles text-blue-600 mt-1"></i>
+                                    <span><strong>Independence Day:</strong> September 18</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-volcano text-blue-600 mt-1"></i>
+                                    <span><strong>Highlights:</strong> Incredible geography from Atacama Desert to Patagonia, national dance (Cueca), and rich literary & political history.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                title: "Our Research Question",
+                subtitle: "Connecting Demographic History with Mathematical Calculus",
+                content: `
+                    <div class="space-y-6">
+                        <div class="p-6 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl">
+                            <div class="text-xs font-bold uppercase tracking-wider text-indigo-200 mb-2">Central Question</div>
+                            <h3 class="text-xl sm:text-2xl font-bold leading-snug">
+                                "How has life expectancy at birth changed over time in Mexico and Chile — and what can calculus tell us about the rate of that change?"
+                            </h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <div class="text-xs font-bold text-slate-400 uppercase mb-1">Data Indicator</div>
+                                <div class="font-bold text-slate-800 dark:text-white text-base">Life Expectancy at Birth (Years)</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">World Bank Indicator Code: <code class="math-font bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded text-emerald-600 dark:text-emerald-400">SP.DYN.LE00.IN</code></div>
+                            </div>
+
+                            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <div class="text-xs font-bold text-slate-400 uppercase mb-1">Mathematical Approach</div>
+                                <div class="font-bold text-slate-800 dark:text-white text-base">Polynomial Modeling & Derivatives</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">Fitting curves, inspecting rates of change, concavity & tangent lines.</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                title: "What Does the Data Measure?",
+                subtitle: "Understanding Population Indicators & Important Cautions",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                        <!-- Main Definition -->
+                        <div class="md:col-span-2 p-6 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                            <div>
+                                <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase mb-2">Definition</div>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-3">Life Expectancy at Birth</h4>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    An overall population-level estimate reflecting the average number of years a newborn would live if mortality patterns at birth stay constant.
+                                </p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-400">
+                                Source: World Bank Open Data
+                            </div>
+                        </div>
+
+                        <!-- Cautions & Limitations -->
+                        <div class="md:col-span-3 space-y-3">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Analytical Cautions & Limitations
+                            </h4>
+
+                            <div class="p-3.5 rounded-lg border border-rose-200 dark:border-rose-950 bg-rose-50/50 dark:bg-rose-950/20 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
+                                <i class="fa-solid fa-circle-dot text-rose-500 mt-1"></i>
+                                <div><strong>Population Average:</strong> It does NOT predict an individual's exact lifespan.</div>
+                            </div>
+
+                            <div class="p-3.5 rounded-lg border border-amber-200 dark:border-amber-950 bg-amber-50/50 dark:bg-amber-950/20 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
+                                <i class="fa-solid fa-circle-dot text-amber-500 mt-1"></i>
+                                <div><strong>Does Not Explain Causes:</strong> Math models trends, but cannot explain underlying social/medical causes on their own.</div>
+                            </div>
+
+                            <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
+                                <i class="fa-solid fa-circle-dot text-slate-400 mt-1"></i>
+                                <div><strong>Data Gaps:</strong> Missing historical observations remain unrecorded or estimated.</div>
+                            </div>
+
+                            <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
+                                <i class="fa-solid fa-circle-dot text-slate-400 mt-1"></i>
+                                <div><strong>Hides Inequalities:</strong> National averages do not capture disparities between different regions or communities.</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                title: "Modeling the Trend with Polynomials",
+                subtitle: "Fitting continuous functions to annual data",
+                content: `
+                    <div class="space-y-6">
+                        <div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-sm text-slate-700 dark:text-slate-300">
+                            <strong>Step 1:</strong> Define independent variable <span class="math-font text-emerald-600 dark:text-emerald-400 font-bold">t = year - base year</span> (e.g., t = 0 represents 1960).
+                        </div>
+
+                        <!-- Mathematical Equation Display -->
+                        <div class="p-6 rounded-xl bg-slate-900 text-white font-mono text-center shadow-lg border border-slate-700">
+                            <div class="text-xs text-slate-400 uppercase tracking-widest mb-2 font-sans">Degree-3 Cubic Polynomial Model</div>
+                            <div class="text-xl sm:text-2xl text-amber-400 font-bold math-font">
+                                p(t) = a·t³ + b·t² + c·t + d
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-2">Degree-3 vs. Degree-5 Models</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Higher degree polynomials (like 5th degree) fit historical data points tighter, but can introduce extreme unrealistic oscillations near the edges (Runge's Phenomenon).
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-2">Residual Analysis & Fit</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Evaluating <span class="math-font text-indigo-500">R²</span> and residuals ensures our polynomial model captures the overall socio-economic trend accurately without overfitting.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                title: "Calculus: Understanding Change",
+                subtitle: "First and Second Derivatives",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- First Derivative -->
+                        <div class="p-6 rounded-xl border border-teal-200 dark:border-teal-900 bg-teal-50/50 dark:bg-teal-950/20">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-2.5 py-1 bg-teal-600 text-white font-mono text-xs font-bold rounded">p'(t)</span>
+                                <h4 class="font-bold text-slate-900 dark:text-white">First Derivative</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+                                Represents the <strong>instantaneous rate of change</strong> of life expectancy in years per calendar year.
+                            </p>
+                            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-teal-100 dark:border-teal-900/50 text-xs font-mono text-teal-700 dark:text-teal-300">
+                                p'(t) > 0  ➔  Life expectancy growing<br/>
+                                p'(t) < 0  ➔  Life expectancy declining
+                            </div>
+                        </div>
+
+                        <!-- Second Derivative -->
+                        <div class="p-6 rounded-xl border border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-950/20">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-2.5 py-1 bg-indigo-600 text-white font-mono text-xs font-bold rounded">p''(t)</span>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Second Derivative</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+                                Measures <strong>acceleration</strong> (how the rate of change is changing). Dictates curve concavity.
+                            </p>
+                            <div class="p-3 bg-white dark:bg-slate-900 rounded-lg border border-indigo-100 dark:border-indigo-900/50 text-xs font-mono text-indigo-700 dark:text-indigo-300">
+                                p''(t) > 0  ➔  Concave Up (growth accelerating)<br/>
+                                p''(t) < 0  ➔  Concave Down (growth slowing)
+                            </div>
+                        </div>
+
+                        <!-- Critical Points Callout -->
+                        <div class="md:col-span-2 p-4 rounded-xl bg-slate-900 text-slate-200 text-xs flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-bullseye text-amber-400 text-xl"></i>
+                                <span><strong>Critical Points:</strong> Solve <code class="math-font text-amber-400">p'(t) = 0</code>. Test sign of <code class="math-font text-amber-400">p''(t)</code> to classify local maximums or minimums.</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                title: "Rates of Change & Tangent Lines",
+                subtitle: "Average vs. Instantaneous & Linear Approximation",
+                content: `
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Average Rate -->
+                            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <div class="text-xs font-bold text-slate-400 uppercase mb-2">Average Rate of Change</div>
+                                <div class="p-3 bg-slate-900 text-emerald-400 rounded-lg font-mono text-center text-sm mb-2">
+                                    [ L(b) - L(a) ] / (b - a)
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-300">
+                                    Slope of the secant line across a span of years from year <em>a</em> to year <em>b</em>.
+                                </p>
+                            </div>
+
+                            <!-- Tangent Line Formula -->
+                            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
+                                <div class="text-xs font-bold text-slate-400 uppercase mb-2">Tangent Line Equation</div>
+                                <div class="p-3 bg-slate-900 text-amber-400 rounded-lg font-mono text-center text-sm mb-2">
+                                    y = p(t₀) + p'(t₀)(t - t₀)
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-slate-300">
+                                    Provides local linear approximation of life expectancy near a specific selected year <code class="math-font">t₀</code>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-indigo-200 dark:border-indigo-900 bg-indigo-50/40 dark:bg-indigo-950/30 text-xs text-slate-700 dark:text-slate-300 flex items-center gap-3">
+                            <i class="fa-solid fa-chart-line text-indigo-600 text-lg"></i>
+                            <div>
+                                <strong>Practical Application:</strong> Tangent lines give scientists and policymakers an instant estimate of short-term projections if current growth trends stay identical.
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                title: "What Can & Cannot Be Concluded?",
+                subtitle: "Understanding the Boundaries of Mathematical Modeling",
+                content: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- CAN SHOW -->
+                        <div class="p-5 rounded-xl border border-emerald-200 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20">
+                            <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i> What Calculus CAN Show
+                            </h4>
+                            <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                                    <span>Broad overall direction and trend trajectory over multi-decade spans.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                                    <span>Exact instantaneous rate of change at any historical year.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                                    <span>Inflection points where growth accelerated or slowed down.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                                    <span>Mathematical comparisons between model degrees (e.g., cubic vs quintic).</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- CANNOT PROVE -->
+                        <div class="p-5 rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/20">
+                            <h4 class="font-bold text-rose-800 dark:text-rose-300 text-sm mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-xmark text-rose-600"></i> What Calculus CANNOT Prove
+                            </h4>
+                            <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-xmark text-rose-500 mt-0.5"></i>
+                                    <span><strong>Why</strong> changes happened (e.g. healthcare policy, pandemic, economic shifts).</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-xmark text-rose-500 mt-0.5"></i>
+                                    <span>Individual person lifespan experiences or local community differences.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-xmark text-rose-500 mt-0.5"></i>
+                                    <span>Long-range future forecasts (extrapolation beyond data range is unreliable).</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-xmark text-rose-500 mt-0.5"></i>
+                                    <span>A single number summarizing an entire nation's complex quality of life.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                title: "Conclusion & Sources",
+                subtitle: "Synthesizing Culture, Data, and Mathematics",
+                content: `
+                    <div class="space-y-6 text-center">
+                        <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl max-w-2xl mx-auto">
+                            <i class="fa-solid fa-quote-left text-emerald-400 text-2xl mb-2 block"></i>
+                            <p class="text-base sm:text-lg font-medium leading-relaxed mb-4">
+                                "Hispanic heritage includes many diverse histories. Data & calculus help study change, but historical and social context is what gives numbers real meaning."
+                            </p>
+                            <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">— Hispanic Heritage Project Synthesis</div>
+                        </div>
+
+                        <!-- Sources Box -->
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 max-w-md mx-auto text-left">
+                            <div class="text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-database"></i> Primary Data Source
+                            </div>
+                            <div class="text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                                <p><strong>Data Provider:</strong> The World Bank Open Data API</p>
+                                <p><strong>Indicator Code:</strong> <code class="math-font text-emerald-600 dark:text-emerald-400">SP.DYN.LE00.IN</code></p>
+                                <p><strong>Indicator Name:</strong> Life expectancy at birth, total (years)</p>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-400">
+                            Thank you for exploring this project!
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // STATE MANAGEMENT
+        let currentSlideIndex = 0;
+
+        // DOM ELEMENTS
+        const slideCard = document.getElementById('slide-card');
+        const slideContent = document.getElementById('slide-content');
+        const slideFooterTag = document.getElementById('slide-footer-tag');
+        const currentSlideNumEl = document.getElementById('current-slide-num');
+        const totalSlidesNumEl = document.getElementById('total-slides-num');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const mobilePrev = document.getElementById('mobile-prev');
+        const mobileNext = document.getElementById('mobile-next');
+        const mobileSelect = document.getElementById('mobile-slide-select');
+        const thumbnailsContainer = document.getElementById('thumbnails-container');
+        const slideDrawer = document.getElementById('slide-drawer');
+        const toggleThumbsBtn = document.getElementById('toggle-thumbs-btn');
+        const closeDrawerBtn = document.getElementById('close-drawer-btn');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const fullscreenToggleBtn = document.getElementById('fullscreen-toggle');
+
+        // INITIALIZATION
+        function initApp() {
+            totalSlidesNumEl.textContent = slidesData.length;
+            renderThumbnails();
+            renderMobileSelect();
+            renderSlide(0);
+
+            // Setup Theme from user preference or system
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        // RENDER SLIDE FUNCTION
+        function renderSlide(index) {
+            if (index < 0 || index >= slidesData.length) return;
+
+            currentSlideIndex = index;
+            const slide = slidesData[index];
+
+            // Animate transition out
+            slideCard.classList.add('fade-enter');
+
+            setTimeout(() => {
+                // Insert HTML
+                slideContent.innerHTML = `
+                    <div class="mb-6 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                            Slide ${slide.id} of ${slidesData.length}
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1">
+                            ${slide.title}
+                        </h2>
+                        ${slide.subtitle ? `<p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">${slide.subtitle}</p>` : ''}
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        ${slide.content}
+                    </div>
+                `;
+
+                // Update Header Counter & Footer
+                currentSlideNumEl.textContent = index + 1;
+                slideFooterTag.textContent = `Slide ${index + 1} of ${slidesData.length}`;
+
+                // Update Progress bar
+                const progressPercent = ((index + 1) / slidesData.length) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+
+                // Update Button Disabled States
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === slidesData.length - 1;
+                mobilePrev.disabled = index === 0;
+                mobileNext.disabled = index === slidesData.length - 1;
+
+                // Update Mobile Select
+                mobileSelect.value = index;
+
+                // Highlight Active Thumbnail
+                updateActiveThumbnail(index);
+
+                // Animate transition in
+                slideCard.classList.remove('fade-enter');
+                slideCard.classList.add('fade-enter-active');
+            }, 150);
+        }
+
+        // RENDER SIDEBAR THUMBNAILS
+        function renderThumbnails() {
+            thumbnailsContainer.innerHTML = '';
+            slidesData.forEach((slide, idx) => {
+                const item = document.createElement('button');
+                item.className = `w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 text-xs thumbnail-item ${
+                    idx === currentSlideIndex 
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' 
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                }`;
+                item.dataset.index = idx;
+                item.innerHTML = `
+                    <span class="w-5 h-5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center text-[10px] font-bold shrink-0">
+                        ${slide.id}
+                    </span>
+                    <div class="truncate">
+                        <div class="truncate text-slate-800 dark:text-slate-200 font-medium">${slide.title}</div>
+                        <div class="text-[10px] text-slate-400 truncate">${slide.subtitle || ''}</div>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    renderSlide(idx);
+                    if (window.innerWidth < 1024) {
+                        slideDrawer.classList.add('translate-x-full');
+                    }
+                });
+                thumbnailsContainer.appendChild(item);
+            });
+        }
+
+        function updateActiveThumbnail(activeIndex) {
+            const thumbs = thumbnailsContainer.querySelectorAll('.thumbnail-item');
+            thumbs.forEach((thumb, idx) => {
+                if (idx === activeIndex) {
+                    thumb.classList.add('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'font-semibold');
+                    thumb.classList.remove('border-slate-200', 'dark:border-slate-800');
+                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    thumb.classList.remove('border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'font-semibold');
+                    thumb.classList.add('border-slate-200', 'dark:border-slate-800');
+                }
+            });
+        }
+
+        // RENDER MOBILE SELECT OPTIONS
+        function renderMobileSelect() {
+            mobileSelect.innerHTML = '';
+            slidesData.forEach((slide, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `${slide.id}. ${slide.title}`;
+                mobileSelect.appendChild(opt);
+            });
+        }
+
+        // NAVIGATION LISTENERS
+        prevBtn.addEventListener('click', () => renderSlide(currentSlideIndex - 1));
+        nextBtn.addEventListener('click', () => renderSlide(currentSlideIndex + 1));
+        mobilePrev.addEventListener('click', () => renderSlide(currentSlideIndex - 1));
+        mobileNext.addEventListener('click', () => renderSlide(currentSlideIndex + 1));
+
+        mobileSelect.addEventListener('change', (e) => {
+            renderSlide(parseInt(e.target.value, 10));
+        });
+
+        // KEYBOARD NAVIGATION
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                renderSlide(currentSlideIndex + 1);
+            } else if (e.key === 'ArrowLeft') {
+                renderSlide(currentSlideIndex - 1);
+            }
+        });
+
+        // TOGGLE DRAWER
+        toggleThumbsBtn.addEventListener('click', () => {
+            slideDrawer.classList.toggle('translate-x-full');
+        });
+        closeDrawerBtn.addEventListener('click', () => {
+            slideDrawer.classList.add('translate-x-full');
+        });
+
+        // THEME TOGGLE
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // FULLSCREEN TOGGLE
+        fullscreenToggleBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // SWIPE GESTURE SUPPORT FOR TOUCH DEVICES
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const threshold = 50;
+            if (touchEndX < touchStartX - threshold) {
+                renderSlide(currentSlideIndex + 1); // Swipe Left -> Next
+            }
+            if (touchEndX > touchStartX + threshold) {
+                renderSlide(currentSlideIndex - 1); // Swipe Right -> Prev
+            }
+        }
+
+        // START APP ON LOAD
+        window.onload = initApp;
+    </script>
+</body>
+</html>
